@@ -1,61 +1,42 @@
 import mongoose from "mongoose";
 
-const productosListado = new mongoose.Schema(
-    {
-        codigo: {
-            type: String,
-            required: [true, "El código es obligatorio"],
-            unique: true,
-            uppercase: true,
-            trim: true
-        },
-        nombre: {
-            type: String,
-            required: true,
-            trim: true,
-            minlength: 4
-        },
-        categoria: {
-            type: String,
-            required: true,
-            enum: {
-                values: [
-                    "Procesadores",
-                    "Tarjetas Gráficas",
-                    "Memorias RAM",
-                    "Almacenamiento"
-                ],
-                message: "{VALUE}, no es una categoría válida"
-            }
-        },
-        precio: {
-            type: Number,
-            required: true,
-            min: [0, "El precio no puede ser negativo"]
-        },
-        stock: {
-            type: Number,
-            required: true,
-            min: [0, "El stock no puede ser negativo"],
-            validate: {
-                validator: Number.isInteger,
-                message: "El stock debe ser un número entero"
-            }
-        },
-        compatibleCon: {
-            type: [String],
-            default: []
-        },
-        destacado: {
-            type: Boolean,
-            default: false
+export default async function handler(req, res) {
+    try {
+        if (mongoose.connection.readyState === 0) {
+            await mongoose.connect(process.env.MONGODB_URI);
         }
-    },
-    {
-        timestamps: true
+
+        const { categoria, precioMax, compatibilidad } = req.query;
+
+        const filtro = {};
+
+        if (categoria) {
+            filtro.categoria = categoria;
+        }
+
+        if (precioMax) {
+            filtro.precio = { $lte: Number(precioMax) };
+        }
+
+        if (compatibilidad) {
+            filtro.compatibleCon = {
+                $in: [compatibilidad]
+            };
+        }
+
+        const productos = await Producto.find(filtro)
+            .sort({ precio: 1 });
+
+        return res.status(200).json({
+            total: productos.length,
+            filtrosAplicados: filtro,
+            datos: productos
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            error: "Error al consultar el inventario",
+            detalle: error.message
+        });
     }
-);
-
-const Producto = mongoose.models.Producto || mongoose.model("Producto", productosListado);
-
-export default Producto;
+}
