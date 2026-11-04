@@ -21,7 +21,7 @@ export default async function handler(req, res) {
         }
 
         if (compatibilidad) {
-            filtro.compatibilidad = { $in: [compatibilidad] };
+            filtro.compatibleCon = { $in: [compatibilidad] };
         }
 
         const productos = await Producto.find(filtro)
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
     } catch (error) {
         return res.status(500).json({
-            error: "Error al consultar el producto",
+            error: "Error al consultar el inventario",
             detalle: error.message
         });
     }
