@@ -1,11 +1,11 @@
-import Producto from "./models/Producto.js";
+import Producto, { CATEGORIAS } from "./models/Producto.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 
 const productosIniciales = [
     {
         codigo: "PROC001",
         nombre: "AMD Ryzen 5 5600X",
-        categoria: "Procesadores",
+        categoria: CATEGORIAS.PROCESADORES,
         precio: 159.99,
         stock: 15,
         destacado: true
@@ -13,7 +13,7 @@ const productosIniciales = [
     {
         codigo: "PROC002",
         nombre: "Intel Core i7-13700K",
-        categoria: "Procesadores",
+        categoria: CATEGORIAS.PROCESADORES,
         precio: 349.99,
         stock: 8,
         destacado: true
@@ -21,7 +21,7 @@ const productosIniciales = [
     {
         codigo: "GPU001",
         nombre: "NVIDIA RTX 4060",
-        categoria: "Tarjetas Gráficas",
+        categoria: CATEGORIAS.TARJETAS_GRAFICAS,
         precio: 329.99,
         stock: 12,
         destacado: true
@@ -29,7 +29,7 @@ const productosIniciales = [
     {
         codigo: "GPU002",
         nombre: "AMD Radeon RX 7600",
-        categoria: "Tarjetas Gráficas",
+        categoria: CATEGORIAS.TARJETAS_GRAFICAS,
         precio: 269.99,
         stock: 6,
         destacado: false
@@ -37,7 +37,7 @@ const productosIniciales = [
     {
         codigo: "RAM001",
         nombre: "Corsair Vengeance 16GB DDR4",
-        categoria: "Memorias RAM",
+        categoria: CATEGORIAS.MEMORIAS_RAM,
         precio: 49.99,
         stock: 25,
         destacado: false
@@ -45,7 +45,7 @@ const productosIniciales = [
     {
         codigo: "RAM002",
         nombre: "Kingston Fury 32GB DDR5",
-        categoria: "Memorias RAM",
+        categoria: CATEGORIAS.MEMORIAS_RAM,
         precio: 99.99,
         stock: 10,
         destacado: true
@@ -53,7 +53,7 @@ const productosIniciales = [
     {
         codigo: "ALM001",
         nombre: "Samsung 990 EVO 1TB",
-        categoria: "Almacenamiento",
+        categoria: CATEGORIAS.ALMACENAMIENTO,
         precio: 89.99,
         stock: 18,
         destacado: true
@@ -61,7 +61,7 @@ const productosIniciales = [
     {
         codigo: "ALM002",
         nombre: "Crucial BX500 500GB SSD",
-        categoria: "Almacenamiento",
+        categoria: CATEGORIAS.ALMACENAMIENTO,
         precio: 39.99,
         stock: 0,
         destacado: false

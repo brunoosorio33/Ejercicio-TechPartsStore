@@ -1,4 +1,4 @@
-import Producto from "./models/Producto.js";
+import Producto, { CATEGORIAS } from "./models/Producto.js";
 import { connectDB, disconnectDB } from "./config/db.js";
 
 async function ejecutarConsultas() {
@@ -9,7 +9,7 @@ async function ejecutarConsultas() {
 
         // Consulta 1
         const tarjetasGraficas = await Producto.find({
-            categoria: "Tarjetas Gráficas",
+            categoria: CATEGORIAS.TARJETAS_GRAFICAS,
             stock: { $gt: 0 }
         });
 
