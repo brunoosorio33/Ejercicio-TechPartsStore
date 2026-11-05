@@ -33,7 +33,12 @@ function validarPrecioMax(valor, errores) {
         return undefined;
     }
 
-    const numero = esTexto(valor) ? Number(valor) : NaN;
+    if (!esTexto(valor) || valor.trim() === "") {
+        errores.precioMax = "precioMax debe ser un número mayor o igual que 0";
+        return undefined;
+    }
+
+    const numero = Number(valor);
 
     if (!Number.isFinite(numero) || numero < 0) {
         errores.precioMax = "precioMax debe ser un número mayor o igual que 0";
@@ -61,7 +66,12 @@ function validarLimite(valor, errores) {
         return LIMITE_POR_DEFECTO;
     }
 
-    const numero = esTexto(valor) ? Number(valor) : NaN;
+    if (!esTexto(valor) || valor.trim() === "") {
+        errores.limit = `limit debe ser un entero entre 1 y ${LIMITE_MAXIMO}`;
+        return LIMITE_POR_DEFECTO;
+    }
+
+    const numero = Number(valor);
 
     if (!Number.isInteger(numero) || numero < 1 || numero > LIMITE_MAXIMO) {
         errores.limit = `limit debe ser un entero entre 1 y ${LIMITE_MAXIMO}`;

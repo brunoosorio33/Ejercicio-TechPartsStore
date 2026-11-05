@@ -87,7 +87,7 @@ async function sincronizarProductos() {
         }
     }));
 
-    const resultado = await Producto.bulkWrite(operaciones);
+    const resultado = await Producto.bulkWrite(operaciones, { timestamps: false });
 
     console.log("Productos insertados:", resultado.upsertedCount);
     console.log("Productos actualizados:", resultado.modifiedCount);
