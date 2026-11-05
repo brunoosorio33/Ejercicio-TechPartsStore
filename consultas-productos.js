@@ -10,6 +10,8 @@ async function ejecutarConsultas() {
 
         console.log("==== Laboratorio de consultas de productos ====");
 
+        console.log("Conexión a MongoDB establecida correctamente");
+
         // Consulta 1
         const tarjetasGraficas = await Producto.find({
             categoria: "Tarjetas Gráficas",
