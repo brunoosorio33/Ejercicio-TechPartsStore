@@ -1,5 +1,5 @@
-import Producto, { CATEGORIAS } from "./models/Producto.js";
-import { connectDB, disconnectDB } from "./config/db.js";
+import Producto, { CATEGORIAS } from "../models/Producto.js";
+import { connectDB, disconnectDB } from "../config/db.js";
 
 const productosIniciales = [
     {
@@ -68,14 +68,30 @@ const productosIniciales = [
     }
 ];
 
-async function limpiarColeccion() {
-    try {
-        const resultado = await Producto.deleteMany({});
-        console.log("Productos eliminados:", resultado.deletedCount);
-    } catch (error) {
-        console.error("Error al limpiar:", error);
-        throw error;
-    }
+const FORZAR = process.argv.includes("--force");
+
+async function reemplazarProductos() {
+    const eliminados = await Producto.deleteMany({});
+    console.log("Productos eliminados:", eliminados.deletedCount);
+
+    const insertados = await Producto.insertMany(productosIniciales);
+    console.log("Productos insertados:", insertados.length);
+}
+
+async function sincronizarProductos() {
+    const operaciones = productosIniciales.map((producto) => ({
+        updateOne: {
+            filter: { codigo: producto.codigo },
+            update: { $set: producto },
+            upsert: true
+        }
+    }));
+
+    const resultado = await Producto.bulkWrite(operaciones);
+
+    console.log("Productos insertados:", resultado.upsertedCount);
+    console.log("Productos actualizados:", resultado.modifiedCount);
+    console.log("Sin cambios:", resultado.matchedCount - resultado.modifiedCount);
 }
 
 async function iniciar() {
@@ -83,37 +99,18 @@ async function iniciar() {
         await connectDB();
         console.log("Conectado a MongoDB");
 
-        await limpiarColeccion();
-
-        const resultado = await Producto.insertMany(productosIniciales);
-
-        console.log("Productos insertados:", resultado.length);
-
-        try {
-            await Producto.create({
-                nombre: "TEST001",
-                categoria: "Movil",
-                precio: -20,
-                stock: 10,
-                destacado: false
-            });
-
-            console.log("El producto se ha añadido correctamente");
-
-        } catch (error) {
-            console.log("\n--- ERROR VALIDACIÓN DE MONGOOSE ---");
-
-            if (error.name === "ValidationError") {
-                Object.values(error.errors).forEach((err) => {
-                    console.log(`- Campo [${err.path}]: ${err.message}`);
-                });
-            } else {
-                console.log("Error:", error.message);
-            }
+        if (FORZAR) {
+            console.log("Modo --force: se vaciará la colección antes de insertar.");
+            await reemplazarProductos();
+        } else {
+            console.log("Modo seguro: se insertarán o actualizarán productos sin borrar nada.");
+            console.log("Usa --force para vaciar la colección antes de insertar.");
+            await sincronizarProductos();
         }
 
     } catch (error) {
-        console.error("Error durante el iniciado:", error);
+        console.error("Error durante el seeding:", error.message);
+        process.exitCode = 1;
 
     } finally {
         await disconnectDB();

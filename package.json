@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "seed": "node scripts/seed.js",
+    "seed:reset": "node scripts/seed.js --force",
+    "consultas": "node scripts/consultas.js",
+    "demo:validacion": "node scripts/demo-validacion.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
