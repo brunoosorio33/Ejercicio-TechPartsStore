@@ -1,16 +1,11 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
 import Producto from "./models/Producto.js";
-
-dotenv.config();
+import { connectDB, disconnectDB } from "./config/db.js";
 
 async function ejecutarConsultas() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        await connectDB();
 
         console.log("==== Laboratorio de consultas de productos ====");
-
-        console.log("Conexión a MongoDB establecida correctamente");
 
         // Consulta 1
         const tarjetasGraficas = await Producto.find({
@@ -54,7 +49,7 @@ async function ejecutarConsultas() {
         console.error("Error en las consultas:", error.message);
 
     } finally {
-        await mongoose.disconnect();
+        await disconnectDB();
         console.log("\nSe ha desconectado de MongoDB");
     }
 }

@@ -1,8 +1,5 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
 import Producto from "./models/Producto.js";
-
-dotenv.config();
+import { connectDB, disconnectDB } from "./config/db.js";
 
 const productosIniciales = [
     {
@@ -83,7 +80,7 @@ async function limpiarColeccion() {
 
 async function iniciar() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI);
+        await connectDB();
         console.log("Conectado a MongoDB");
 
         await limpiarColeccion();
@@ -119,7 +116,7 @@ async function iniciar() {
         console.error("Error durante el iniciado:", error);
 
     } finally {
-        await mongoose.disconnect();
+        await disconnectDB();
         console.log("Conexión terminada");
     }
 }

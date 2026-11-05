@@ -1,12 +1,10 @@
 
-import mongoose from "mongoose";
 import Producto from "../models/Producto.js";
+import { connectDB } from "../config/db.js";
 
 export default async function handler(req, res) {
     try {
-        if (mongoose.connection.readyState === 0) {
-            await mongoose.connect(process.env.MONGODB_URI);
-        }
+        await connectDB();
 
         const { categoria, precioMax, compatibilidad } = req.query;
 
